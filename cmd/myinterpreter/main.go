@@ -28,6 +28,8 @@ const (
 	LESS_EQUAL
 	GREATER_THAN
 	GREATER_EQUAL
+	BANG
+	BANG_EQUAL
 )
 
 type Token struct {
@@ -114,6 +116,14 @@ func (s *Scanner) ScanToken() error {
 	case ';':
 		fmt.Println("SEMICOLON ; null")
 		s.AddToken(SEMICOLON)
+	case '!':
+		if !s.match('=') {
+			fmt.Println("BANG ! null")
+			s.AddToken(BANG)
+		} else {
+			fmt.Println("BANG_EQUAL != null")
+			s.AddToken(BANG_EQUAL)
+		}
 	case '=':
 		if !s.match('=') {
 			fmt.Println("EQUAL = null")
@@ -135,7 +145,7 @@ func (s *Scanner) ScanToken() error {
 	case '>':
 		if !s.match('=') {
 			fmt.Println("GREATER_THAN < null")
-			s.AddToken(GREATER_EQUAL)
+			s.AddToken(GREATER_THAN)
 		} else {
 			fmt.Println("GREATER_EQUAL <= null")
 			s.AddToken(GREATER_EQUAL)
