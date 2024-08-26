@@ -78,6 +78,10 @@ func (s *Scanner) advance() byte {
 	output := s.source[s.current]
 	s.current++
 
+	//if s.source[s.current] == '\n' {
+	//	s.line++
+	//}
+
 	return output
 }
 
@@ -152,6 +156,8 @@ func (s *Scanner) ScanToken() error {
 			s.AddToken(GREATER_EQUAL)
 		}
 	case '\n':
+		s.line += 1
+		//break
 	case '\t':
 	case ' ':
 	case '/':
@@ -159,20 +165,18 @@ func (s *Scanner) ScanToken() error {
 			fmt.Println("SLASH / null")
 			s.AddToken(SLASH)
 		} else {
-			for s.Peek() != 0 && !s.isAtEnd() {
+			for s.Peek() != '\n' && !s.isAtEnd() {
 				s.advance()
 			}
 		}
 
 	default:
-		fmt.Fprintln(os.Stderr, fmt.Sprintf("[line 1] Error: Unexpected character: %c", c))
+		fmt.Fprintln(os.Stderr, fmt.Sprintf("[line %d] Error: Unexpected character: %c", s.line, c))
 		isError = true
 	}
 	s.AddToken(EOF)
 	if isError {
 		return errors.New(fmt.Sprintf("[line 1] Error: Unexpected character: %c", c))
-		//	fmt.Println("EOF  null")
-		//	os.Exit(65)
 	}
 	return nil
 }
@@ -243,16 +247,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Uncomment this block to pass the first stage
-	//
 	filename := os.Args[2]
 	flag := false
 	fileContents, err := os.ReadFile(filename)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error reading file: %v\n", err)
-		fmt.Println("here")
 		os.Exit(1)
-		//os.Exit(65)
 	}
 
 	if len(fileContents) > 0 {
@@ -260,11 +260,7 @@ func main() {
 		_, err = s.ScanTokens()
 		if err != nil {
 			flag = true
-			//fmt.Println("setting flag to true")
 		}
-		//} else {
-		//	//fmt.Println("error  null")
-		//}
 	}
 	if flag {
 		fmt.Println("EOF  null")
