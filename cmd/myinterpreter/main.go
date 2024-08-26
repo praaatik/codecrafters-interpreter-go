@@ -30,6 +30,7 @@ const (
 	GREATER_EQUAL
 	BANG
 	BANG_EQUAL
+	SLASH
 )
 
 type Token struct {
@@ -153,7 +154,10 @@ func (s *Scanner) ScanToken() error {
 	case '\n':
 	case ' ':
 	case '/':
-		if s.match('/') {
+		if !s.match('/') {
+			fmt.Println("SLASH / null")
+			s.AddToken(SLASH)
+		} else {
 			for s.Peek() != 0 && !s.isAtEnd() {
 				s.advance()
 			}
