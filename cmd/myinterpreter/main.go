@@ -16,6 +16,12 @@ const (
 	RIGHT_PAREN
 	LEFT_BRACE
 	RIGHT_BRACE
+	STAR
+	DOT
+	COMMA
+	PLUS
+	MINUS
+	SEMICOLON
 )
 
 type Token struct {
@@ -83,7 +89,26 @@ func (s *Scanner) ScanToken() error {
 	case '}':
 		fmt.Println("RIGHT_BRACE } null")
 		s.AddToken(RIGHT_BRACE)
+	case '*':
+		fmt.Println("STAR * null")
+		s.AddToken(STAR)
+	case '+':
+		fmt.Println("PLUS + null")
+		s.AddToken(PLUS)
+	case '-':
+		fmt.Println("MINUS - null")
+		s.AddToken(MINUS)
+	case ',':
+		fmt.Println("COMMA , null")
+		s.AddToken(COMMA)
+	case '.':
+		fmt.Println("DOT . null")
+		s.AddToken(DOT)
+	case ';':
+		fmt.Println("SEMICOLON ; null")
+		s.AddToken(SEMICOLON)
 	default:
+		fmt.Fprintln(os.Stderr, fmt.Sprintf("[line 1] Error: Unexpected character: %c", c))
 	}
 	s.AddToken(EOF)
 	return nil
