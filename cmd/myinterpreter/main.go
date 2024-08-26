@@ -152,6 +152,7 @@ func (s *Scanner) ScanToken() error {
 			s.AddToken(GREATER_EQUAL)
 		}
 	case '\n':
+	case '\t':
 	case ' ':
 	case '/':
 		if !s.match('/') {
