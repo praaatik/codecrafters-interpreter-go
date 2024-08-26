@@ -24,9 +24,9 @@ const (
 	SEMICOLON
 	EQUAL
 	EQUAL_EQUAL
-	LESS_THAN
+	LESS
 	LESS_EQUAL
-	GREATER_THAN
+	GREATER
 	GREATER_EQUAL
 	BANG
 	BANG_EQUAL
@@ -135,8 +135,8 @@ func (s *Scanner) ScanToken() error {
 
 	case '<':
 		if !s.match('=') {
-			fmt.Println("LESS_THAN < null")
-			s.AddToken(LESS_THAN)
+			fmt.Println("LESS < null")
+			s.AddToken(LESS)
 		} else {
 			fmt.Println("LESS_EQUAL <= null")
 			s.AddToken(LESS_EQUAL)
@@ -144,10 +144,10 @@ func (s *Scanner) ScanToken() error {
 
 	case '>':
 		if !s.match('=') {
-			fmt.Println("GREATER_THAN < null")
-			s.AddToken(GREATER_THAN)
+			fmt.Println("GREATER > null")
+			s.AddToken(GREATER)
 		} else {
-			fmt.Println("GREATER_EQUAL <= null")
+			fmt.Println("GREATER_EQUAL >= null")
 			s.AddToken(GREATER_EQUAL)
 		}
 	case '\n':
