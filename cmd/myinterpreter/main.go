@@ -22,6 +22,12 @@ const (
 	PLUS
 	MINUS
 	SEMICOLON
+	EQUAL
+	EQUAL_EQUAL
+	LESS_THAN
+	LESS_EQUAL
+	GREATER_THAN
+	GREATER_EQUAL
 )
 
 type Token struct {
@@ -108,7 +114,34 @@ func (s *Scanner) ScanToken() error {
 	case ';':
 		fmt.Println("SEMICOLON ; null")
 		s.AddToken(SEMICOLON)
+	case '=':
+		if !s.match('=') {
+			fmt.Println("EQUAL = null")
+			s.AddToken(EQUAL)
+		} else {
+			fmt.Println("EQUAL_EQUAL == null")
+			s.AddToken(EQUAL_EQUAL)
+		}
+
+	case '<':
+		if !s.match('=') {
+			fmt.Println("LESS_THAN < null")
+			s.AddToken(LESS_THAN)
+		} else {
+			fmt.Println("LESS_EQUAL <= null")
+			s.AddToken(LESS_EQUAL)
+		}
+
+	case '>':
+		if !s.match('=') {
+			fmt.Println("GREATER_THAN < null")
+			s.AddToken(GREATER_EQUAL)
+		} else {
+			fmt.Println("GREATER_EQUAL <= null")
+			s.AddToken(GREATER_EQUAL)
+		}
 	case '\n':
+
 	default:
 		fmt.Fprintln(os.Stderr, fmt.Sprintf("[line 1] Error: Unexpected character: %c", c))
 		isError = true
@@ -140,11 +173,8 @@ func (s *Scanner) ScanTokens() ([]Token, error) {
 	}
 
 	if isError && err2 != nil {
-		//fmt.Println("ScanTokens => ", err2, isError)
 		return s.tokens, errors.New(err2.Error())
 	}
-
-	//fmt.Println("ScanTokens => ", err2, isError)
 
 	// append the EOF token for the end of the file
 	s.tokens = append(s.tokens, Token{
@@ -155,6 +185,20 @@ func (s *Scanner) ScanTokens() ([]Token, error) {
 	})
 
 	return s.tokens, nil
+}
+
+// match matches the next character with the expected character and returns True if match, else false
+func (s *Scanner) match(expectedCharacter byte) bool {
+	if s.isAtEnd() {
+		return false
+	}
+
+	if s.source[s.current] != expectedCharacter {
+		return false
+	}
+
+	s.current += 1
+	return true
 }
 
 func main() {
