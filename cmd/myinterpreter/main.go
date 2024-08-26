@@ -76,6 +76,7 @@ func (s *Scanner) advance() byte {
 func (s *Scanner) ScanToken() error {
 	c := s.advance() // move forward
 
+	isError := false
 	switch c {
 	case '(':
 		fmt.Println("LEFT_PAREN ( null")
@@ -107,10 +108,17 @@ func (s *Scanner) ScanToken() error {
 	case ';':
 		fmt.Println("SEMICOLON ; null")
 		s.AddToken(SEMICOLON)
+	case '\n':
 	default:
 		fmt.Fprintln(os.Stderr, fmt.Sprintf("[line 1] Error: Unexpected character: %c", c))
+		isError = true
 	}
 	s.AddToken(EOF)
+	if isError {
+		return errors.New(fmt.Sprintf("[line 1] Error: Unexpected character: %c", c))
+		//	fmt.Println("EOF  null")
+		//	os.Exit(65)
+	}
 	return nil
 }
 
@@ -119,19 +127,24 @@ func (s *Scanner) ScanTokens() ([]Token, error) {
 	// check if we have reached the end of the current lexeme
 	// if yes, set the start to the current token
 	isError := false
-	var err error
+	var err2 error
 	for !s.isAtEnd() {
 		s.start = s.current
 
-		err = s.ScanToken()
+		err := s.ScanToken()
+
 		if err != nil {
 			isError = true
+			err2 = err
 		}
 	}
 
-	if isError && err != nil {
-		return s.tokens, errors.New(err.Error())
+	if isError && err2 != nil {
+		//fmt.Println("ScanTokens => ", err2, isError)
+		return s.tokens, errors.New(err2.Error())
 	}
+
+	//fmt.Println("ScanTokens => ", err2, isError)
 
 	// append the EOF token for the end of the file
 	s.tokens = append(s.tokens, Token{
@@ -160,15 +173,29 @@ func main() {
 	// Uncomment this block to pass the first stage
 	//
 	filename := os.Args[2]
+	flag := false
 	fileContents, err := os.ReadFile(filename)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error reading file: %v\n", err)
+		fmt.Println("here")
 		os.Exit(1)
+		//os.Exit(65)
 	}
 
 	if len(fileContents) > 0 {
 		s := NewScanner(fileContents)
-		_, _ = s.ScanTokens()
+		_, err = s.ScanTokens()
+		if err != nil {
+			flag = true
+			//fmt.Println("setting flag to true")
+		}
+		//} else {
+		//	//fmt.Println("error  null")
+		//}
+	}
+	if flag {
+		fmt.Println("EOF  null")
+		os.Exit(65)
 	}
 	fmt.Println("EOF  null")
 }
