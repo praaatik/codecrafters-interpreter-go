@@ -151,6 +151,13 @@ func (s *Scanner) ScanToken() error {
 			s.AddToken(GREATER_EQUAL)
 		}
 	case '\n':
+	case ' ':
+	case '/':
+		if s.match('/') {
+			for s.Peek() != 0 && !s.isAtEnd() {
+				s.advance()
+			}
+		}
 
 	default:
 		fmt.Fprintln(os.Stderr, fmt.Sprintf("[line 1] Error: Unexpected character: %c", c))
@@ -163,6 +170,13 @@ func (s *Scanner) ScanToken() error {
 		//	os.Exit(65)
 	}
 	return nil
+}
+
+func (s *Scanner) Peek() byte {
+	if !s.isAtEnd() {
+		return s.source[s.current]
+	}
+	return 0
 }
 
 // ScanTokens scans the tokens one by one
