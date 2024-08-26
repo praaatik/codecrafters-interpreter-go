@@ -77,6 +77,12 @@ func (s *Scanner) ScanToken() error {
 	case ')':
 		fmt.Println("RIGHT_PAREN ) null")
 		s.AddToken(RIGHT_PAREN)
+	case '{':
+		fmt.Println("LEFT_BRACE { null")
+		s.AddToken(LEFT_BRACE)
+	case '}':
+		fmt.Println("RIGHT_BRACE } null")
+		s.AddToken(RIGHT_BRACE)
 	default:
 	}
 	s.AddToken(EOF)
