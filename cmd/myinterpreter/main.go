@@ -31,6 +31,7 @@ const (
 	BANG
 	BANG_EQUAL
 	SLASH
+	STRING
 )
 
 type Token struct {
@@ -170,6 +171,12 @@ func (s *Scanner) ScanToken() error {
 			}
 		}
 
+	case '"':
+		err := s.string()
+		if err != nil {
+			return err
+		}
+
 	default:
 		fmt.Fprintln(os.Stderr, fmt.Sprintf("[line %d] Error: Unexpected character: %c", s.line, c))
 		isError = true
@@ -234,6 +241,29 @@ func (s *Scanner) match(expectedCharacter byte) bool {
 	return true
 }
 
+func (s *Scanner) string() error {
+	for s.Peek() != '"' && !s.isAtEnd() {
+		if s.Peek() == '\n' {
+			s.line += 1
+		}
+
+		s.advance()
+	}
+
+	if s.isAtEnd() {
+		fmt.Fprintln(os.Stderr, fmt.Sprintf("[line %d] Error: Unterminated string.", s.line))
+		return errors.New("")
+	}
+	s.advance()
+
+	stringValue := string(s.source[s.start+1 : s.current-1])
+	s.AddLiteral(STRING, stringValue)
+
+	fmt.Printf("STRING \"%s\" %s\n", stringValue, stringValue)
+
+	return nil
+}
+
 func main() {
 	if len(os.Args) < 3 {
 		fmt.Fprintln(os.Stderr, "Usage: ./your_program.sh tokenize <filename>")
@@ -257,6 +287,7 @@ func main() {
 
 	if len(fileContents) > 0 {
 		s := NewScanner(fileContents)
+
 		_, err = s.ScanTokens()
 		if err != nil {
 			flag = true
