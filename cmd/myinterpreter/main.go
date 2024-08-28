@@ -204,10 +204,12 @@ func (s *Scanner) ScanToken() error {
 	default:
 		if unicode.IsDigit(rune(c)) {
 			s.number()
+			s.AddToken(NUMBER)
+			return nil
 		}
 
 		fmt.Fprintln(os.Stderr, fmt.Sprintf("[line %d] Error: Unexpected character: %c", s.line, c))
-		s.AddToken(NUMBER)
+
 		isError = true
 	}
 
