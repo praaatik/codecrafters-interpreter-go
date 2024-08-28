@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"unicode"
 )
 
 // Lexeme -> Token
@@ -32,6 +33,7 @@ const (
 	BANG_EQUAL
 	SLASH
 	STRING
+	NUMBER
 )
 
 type Token struct {
@@ -84,6 +86,28 @@ func (s *Scanner) advance() byte {
 	//}
 
 	return output
+}
+
+func (s *Scanner) number() {
+	isPoint := false
+	for unicode.IsDigit(rune(s.Peek())) {
+		s.advance()
+	}
+
+	if s.Peek() == '.' && unicode.IsDigit(rune(s.PeekNext())) {
+		s.advance()
+		for unicode.IsDigit(rune(s.Peek())) {
+			s.advance()
+		}
+		isPoint = true
+	}
+
+	value := string(s.source[s.start:s.current])
+	if isPoint {
+		fmt.Printf("NUMBER %s %s\n", value, value)
+	} else {
+		fmt.Printf("NUMBER %s %s.0\n", value, value)
+	}
 }
 
 // ScanToken scans an individual lexeme and matches it the token types
@@ -178,14 +202,28 @@ func (s *Scanner) ScanToken() error {
 		}
 
 	default:
+		if unicode.IsDigit(rune(c)) {
+			s.number()
+		}
+
 		fmt.Fprintln(os.Stderr, fmt.Sprintf("[line %d] Error: Unexpected character: %c", s.line, c))
+		s.AddToken(NUMBER)
 		isError = true
 	}
+
 	s.AddToken(EOF)
 	if isError {
 		return errors.New(fmt.Sprintf("[line 1] Error: Unexpected character: %c", c))
 	}
 	return nil
+}
+
+func (s *Scanner) PeekNext() byte {
+	if s.current < len(s.source) {
+		return s.source[s.current+1]
+	}
+
+	return 0
 }
 
 func (s *Scanner) Peek() byte {
@@ -293,9 +331,11 @@ func main() {
 			flag = true
 		}
 	}
+
 	if flag {
 		fmt.Println("EOF  null")
 		os.Exit(65)
 	}
+
 	fmt.Println("EOF  null")
 }
