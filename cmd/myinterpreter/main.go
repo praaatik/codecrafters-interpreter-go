@@ -34,6 +34,7 @@ const (
 	SLASH
 	STRING
 	NUMBER
+	IDENTIFIER
 )
 
 type Token struct {
@@ -182,7 +183,7 @@ func (s *Scanner) ScanToken() error {
 		}
 	case '\n':
 		s.line += 1
-		//break
+
 	case '\t':
 	case ' ':
 	case '/':
@@ -208,8 +209,12 @@ func (s *Scanner) ScanToken() error {
 			return nil
 		}
 
-		fmt.Fprintln(os.Stderr, fmt.Sprintf("[line %d] Error: Unexpected character: %c", s.line, c))
+		if unicode.IsLetter(rune(c)) || c == '_' {
+			s.identifier()
+			return nil
+		}
 
+		fmt.Fprintln(os.Stderr, fmt.Sprintf("[line %d] Error: Unexpected character: %c", s.line, c))
 		isError = true
 	}
 
@@ -279,6 +284,23 @@ func (s *Scanner) match(expectedCharacter byte) bool {
 
 	s.current += 1
 	return true
+}
+
+func (s *Scanner) identifier() error {
+	for s.Peek() != ' ' && !s.isAtEnd() {
+		s.advance()
+		if s.Peek() == '\n' {
+			s.line += 1
+			break
+		}
+
+	}
+	stringValue := string(s.source[s.start+1 : s.current])
+	s.AddLiteral(IDENTIFIER, stringValue)
+
+	fmt.Printf("IDENTIFIER %s %s\n", stringValue, stringValue)
+
+	return nil
 }
 
 func (s *Scanner) string() error {
