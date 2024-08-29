@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"slices"
 	"strings"
 	"unicode"
 )
@@ -37,23 +38,29 @@ const (
 	NUMBER
 	IDENTIFIER
 
-	AND
-	CLASS
-	ELSE
-	FALSE
-	TRUE
-	FOR
-	FUN
-	IF
-	NIL
-	OR
-	PRINT
-	RETURN
-	SUPER
-	THIS
-	VAR
-	WHILE
+	// reserved keywords
+	//AND
+	//CLASS
+	//ELSE
+	//FALSE
+	//TRUE
+	//FOR
+	//FUN
+	//IF
+	//NIL
+	//OR
+	//PRINT
+	//RETURN
+	//SUPER
+	//THIS
+	//VAR
+	//WHILE
 )
+
+var reservedKeywords = []string{
+	"and", "class", "else", "false", "true", "for", "fun",
+	"if", "nil", "or", "print", "return", "super", "this", "var", "while",
+}
 
 type Token struct {
 	Type    TokenType   // Type would classify each lexeme
@@ -99,10 +106,6 @@ func (s *Scanner) isAtEnd() bool {
 func (s *Scanner) advance() byte {
 	output := s.source[s.current]
 	s.current++
-
-	//if s.source[s.current] == '\n' {
-	//	s.line++
-	//}
 
 	return output
 }
@@ -322,7 +325,6 @@ func (s *Scanner) match(expectedCharacter byte) bool {
 }
 
 func (s *Scanner) identifier() error {
-	// for s.Peek() != ' ' && !s.isAtEnd() && s.Peek() != ')' && s.Peek() != '}' {
 	for s.Peek() != ' ' && !s.isAtEnd() && s.Peek() != ')' && !strings.Contains("{}()", string(s.Peek())) {
 		s.advance()
 
@@ -333,10 +335,14 @@ func (s *Scanner) identifier() error {
 	}
 
 	stringValue := string(s.source[s.start:s.current])
+
+	if slices.Contains(reservedKeywords, stringValue) {
+		fmt.Printf("%s %s null\n", strings.ToUpper(stringValue), strings.ToLower(stringValue))
+		return nil
+	}
+
 	s.AddLiteral(IDENTIFIER, stringValue)
-
 	fmt.Printf("IDENTIFIER %s null\n", stringValue)
-
 	return nil
 }
 

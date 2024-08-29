@@ -1,7 +1,1 @@
-// This is a complex test case
-str1 = "Test"
-str2 = "Case"
-num1 = 100
-num2 = 200.223
-result = (str1 == str2) != ((num1 + num2) >= 300)
-}
+VAR false FOR FALSE if OR SUPER var print AND class CLASS THIS true PRINT for IF super return WHILE nil this and NIL TRUE fun or FUN ELSE else RETURN while
