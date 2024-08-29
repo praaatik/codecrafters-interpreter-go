@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 	"unicode"
 )
 
@@ -35,6 +36,23 @@ const (
 	STRING
 	NUMBER
 	IDENTIFIER
+
+	AND
+	CLASS
+	ELSE
+	FALSE
+	TRUE
+	FOR
+	FUN
+	IF
+	NIL
+	OR
+	PRINT
+	RETURN
+	SUPER
+	THIS
+	VAR
+	WHILE
 )
 
 type Token struct {
@@ -104,11 +122,28 @@ func (s *Scanner) number() {
 	}
 
 	value := string(s.source[s.start:s.current])
+
 	if isPoint {
-		fmt.Printf("NUMBER %s %s\n", value, value)
+		parts := strings.Split(value, ".")
+
+		if areDecimalsZero(parts[1]) {
+			fmt.Printf("NUMBER %s %s.0\n", value, parts[0])
+		} else {
+			fmt.Printf("NUMBER %s %s\n", value, value)
+		}
 	} else {
 		fmt.Printf("NUMBER %s %s.0\n", value, value)
 	}
+}
+
+func areDecimalsZero(value string) bool {
+	for _, char := range value {
+		// fmt.Println("char => ", string(char))
+		if string(char) != "0" {
+			return false
+		}
+	}
+	return true
 }
 
 // ScanToken scans an individual lexeme and matches it the token types
@@ -287,18 +322,20 @@ func (s *Scanner) match(expectedCharacter byte) bool {
 }
 
 func (s *Scanner) identifier() error {
-	for s.Peek() != ' ' && !s.isAtEnd() {
+	// for s.Peek() != ' ' && !s.isAtEnd() && s.Peek() != ')' && s.Peek() != '}' {
+	for s.Peek() != ' ' && !s.isAtEnd() && s.Peek() != ')' && !strings.Contains("{}()", string(s.Peek())) {
 		s.advance()
+
 		if s.Peek() == '\n' {
 			s.line += 1
 			break
 		}
-
 	}
-	stringValue := string(s.source[s.start+1 : s.current])
+
+	stringValue := string(s.source[s.start:s.current])
 	s.AddLiteral(IDENTIFIER, stringValue)
 
-	fmt.Printf("IDENTIFIER %s %s\n", stringValue, stringValue)
+	fmt.Printf("IDENTIFIER %s null\n", stringValue)
 
 	return nil
 }
