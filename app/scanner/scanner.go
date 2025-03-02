@@ -47,6 +47,48 @@ func (s *Scanner) scanToken() {
 			Literal:    nil,
 			LineNumber: 0,
 		})
+	case '*':
+		s.addToken(Token{
+			Type:       STAR,
+			Lexeme:     "*",
+			Literal:    nil,
+			LineNumber: 0,
+		})
+	case '.':
+		s.addToken(Token{
+			Type:       DOT,
+			Lexeme:     ".",
+			Literal:    nil,
+			LineNumber: 0,
+		})
+	case '+':
+		s.addToken(Token{
+			Type:       PLUS,
+			Lexeme:     "+",
+			Literal:    nil,
+			LineNumber: 0,
+		})
+	case '-':
+		s.addToken(Token{
+			Type:       MINUS,
+			Lexeme:     "-",
+			Literal:    nil,
+			LineNumber: 0,
+		})
+	case ',':
+		s.addToken(Token{
+			Type:       COMMA,
+			Lexeme:     ",",
+			Literal:    nil,
+			LineNumber: 0,
+		})
+	case ';':
+		s.addToken(Token{
+			Type:       SEMICOLON,
+			Lexeme:     ";",
+			Literal:    nil,
+			LineNumber: 0,
+		})
 	//TODO: handle the default
 	default:
 	}

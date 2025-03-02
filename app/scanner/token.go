@@ -27,6 +27,20 @@ func (t TokenType) String() string {
 		return "LEFT_BRACE"
 	case RIGHT_BRACE:
 		return "RIGHT_BRACE"
+	case COMMA:
+		return "COMMA"
+	case PLUS:
+		return "PLUS"
+	case MINUS:
+		return "MINUS"
+	case SEMICOLON:
+		return "SEMICOLON"
+	case STAR:
+		return "STAR"
+	case DOT:
+		return "DOT"
+	case SLASH:
+		return "SLASH"
 	case EOF:
 		return "EOF"
 	default:
