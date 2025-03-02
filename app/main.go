@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	scanner2 "github.com/codecrafters-io/interpreter-starter-go/app/scanner"
 	"os"
 )
 
@@ -27,9 +28,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	if len(fileContents) > 0 {
-		panic("Scanner not implemented")
-	} else {
-		fmt.Println("EOF  null") // Placeholder, remove this line when implementing the scanner
-	}
+	source := string(fileContents)
+
+	scanner := scanner2.NewScanner(source)
+	_ = scanner.ScanTokens()
+	scanner.PrintOutput()
 }
