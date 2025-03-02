@@ -33,6 +33,20 @@ func (s *Scanner) scanToken() {
 			Literal:    nil,
 			LineNumber: 0,
 		})
+	case '{':
+		s.addToken(Token{
+			Type:       LEFT_BRACE,
+			Lexeme:     "{",
+			Literal:    nil,
+			LineNumber: 0,
+		})
+	case '}':
+		s.addToken(Token{
+			Type:       RIGHT_BRACE,
+			Lexeme:     "}",
+			Literal:    nil,
+			LineNumber: 0,
+		})
 	//TODO: handle the default
 	default:
 	}
