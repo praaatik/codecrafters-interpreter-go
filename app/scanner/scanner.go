@@ -173,6 +173,19 @@ func (s *Scanner) scanToken() {
 				LineNumber: s.line,
 			})
 		}
+	case '/':
+		if s.match('/') {
+			for s.Advance() != '\n' && !s.isAtEnd() {
+			}
+		} else {
+			s.addToken(Token{
+				Type:       SLASH,
+				Lexeme:     "/",
+				Literal:    nil,
+				LineNumber: s.line,
+			})
+		}
+
 	case '\n':
 		return
 
