@@ -188,6 +188,12 @@ func (s *Scanner) scanToken() {
 
 	case '\n':
 		return
+	case '\t':
+		return
+	case '\r':
+		return
+	case ' ':
+		return
 
 	// TODO: handle the default
 	default:
