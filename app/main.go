@@ -2,13 +2,12 @@ package main
 
 import (
 	"fmt"
-	scanner2 "github.com/codecrafters-io/interpreter-starter-go/app/scanner"
 	"os"
+
+	scanner2 "github.com/codecrafters-io/interpreter-starter-go/app/scanner"
 )
 
 func main() {
-	_, _ = fmt.Fprintln(os.Stderr, "Logs from your program will appear here!")
-
 	if len(os.Args) < 3 {
 		_, _ = fmt.Fprintln(os.Stderr, "Usage: ./your_program.sh tokenize <filename>")
 		os.Exit(1)
