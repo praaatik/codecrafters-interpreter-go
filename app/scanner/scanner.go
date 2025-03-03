@@ -23,6 +23,15 @@ func (s *Scanner) Advance() byte {
 	return s.source[s.current-1]
 }
 
+// match checks if the current character matches the expected character.
+func (s *Scanner) match(expected byte) bool {
+	if s.isAtEnd() || s.source[s.current] != expected {
+		return false
+	}
+	s.current++
+	return true
+}
+
 func (s *Scanner) scanToken() {
 	current := s.Advance()
 
@@ -97,6 +106,34 @@ func (s *Scanner) scanToken() {
 			Literal:    nil,
 			LineNumber: 0,
 		})
+
+	case '!':
+		if s.match('=') {
+			s.addToken(Token{
+				Type:       BANG_EQUAL,
+				Lexeme:     "!=",
+				Literal:    nil,
+				LineNumber: s.line,
+			})
+		}
+
+	case '=':
+		if s.match('=') {
+			s.addToken(Token{
+				Type:       EQUAL_EQUAL,
+				Lexeme:     "==",
+				Literal:    nil,
+				LineNumber: s.line,
+			})
+		} else {
+			s.addToken(Token{
+				Type:       EQUAL,
+				Lexeme:     "=",
+				Literal:    nil,
+				LineNumber: s.line,
+			})
+		}
+
 	case '\n':
 		return
 

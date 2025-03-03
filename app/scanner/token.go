@@ -14,6 +14,11 @@ const (
 	SEMICOLON
 	SLASH
 	STAR
+	EQUAL
+	EQUAL_EQUAL
+	LESS_EQUAL
+	GREATER_EQUAL
+	BANG_EQUAL
 	EOF
 )
 
@@ -43,6 +48,13 @@ func (t TokenType) String() string {
 		return "SLASH"
 	case EOF:
 		return "EOF"
+	case EQUAL:
+		return "EQUAL"
+	case EQUAL_EQUAL:
+		return "EQUAL_EQUAL"
+	case BANG_EQUAL:
+		return "BANG_EQUAL"
+
 	default:
 		return ""
 	}
