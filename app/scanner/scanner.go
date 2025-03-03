@@ -115,6 +115,14 @@ func (s *Scanner) scanToken() {
 				Literal:    nil,
 				LineNumber: s.line,
 			})
+		} else {
+			s.addToken(Token{
+				Type:       BANG,
+				Lexeme:     "!",
+				Literal:    nil,
+				LineNumber: s.line,
+			})
+
 		}
 
 	case '=':
@@ -148,7 +156,7 @@ func (s *Scanner) reportError(c byte) {
 		return
 	}
 
-	fmt.Fprintf(os.Stderr, "[line 1] Error: Unexpected character: %c\n", c)
+	_, _ = fmt.Fprintf(os.Stderr, "[line 1] Error: Unexpected character: %c\n", c)
 	s.hasError = true
 }
 

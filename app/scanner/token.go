@@ -18,6 +18,7 @@ const (
 	EQUAL_EQUAL
 	LESS_EQUAL
 	GREATER_EQUAL
+	BANG
 	BANG_EQUAL
 	EOF
 )
@@ -54,6 +55,8 @@ func (t TokenType) String() string {
 		return "EQUAL_EQUAL"
 	case BANG_EQUAL:
 		return "BANG_EQUAL"
+	case BANG:
+		return "BANG"
 
 	default:
 		return ""
