@@ -177,6 +177,7 @@ func (s *Scanner) scanToken() {
 		if s.match('/') {
 			for s.Advance() != '\n' && !s.isAtEnd() {
 			}
+			s.line++ // increment the line after the comments are parsed?
 		} else {
 			s.addToken(Token{
 				Type:       SLASH,
@@ -187,6 +188,7 @@ func (s *Scanner) scanToken() {
 		}
 
 	case '\n':
+		s.line++
 		return
 	case '\t':
 		return
@@ -206,7 +208,7 @@ func (s *Scanner) reportError(c byte) {
 		return
 	}
 
-	_, _ = fmt.Fprintf(os.Stderr, "[line 1] Error: Unexpected character: %c\n", c)
+	_, _ = fmt.Fprintf(os.Stderr, "[line %d] Error: Unexpected character: %c\n", s.line, c)
 	s.hasError = true
 }
 
