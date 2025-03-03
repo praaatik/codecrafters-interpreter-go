@@ -122,7 +122,6 @@ func (s *Scanner) scanToken() {
 				Literal:    nil,
 				LineNumber: s.line,
 			})
-
 		}
 
 	case '=':
@@ -142,6 +141,38 @@ func (s *Scanner) scanToken() {
 			})
 		}
 
+	case '<':
+		if s.match('=') {
+			s.addToken(Token{
+				Type:       LESS_EQUAL,
+				Lexeme:     "<=",
+				Literal:    nil,
+				LineNumber: s.line,
+			})
+		} else {
+			s.addToken(Token{
+				Type:       LESS,
+				Lexeme:     "<",
+				Literal:    nil,
+				LineNumber: s.line,
+			})
+		}
+	case '>':
+		if s.match('=') {
+			s.addToken(Token{
+				Type:       GREATER_EQUAL,
+				Lexeme:     ">=",
+				Literal:    nil,
+				LineNumber: s.line,
+			})
+		} else {
+			s.addToken(Token{
+				Type:       GREATER,
+				Lexeme:     ">",
+				Literal:    nil,
+				LineNumber: s.line,
+			})
+		}
 	case '\n':
 		return
 

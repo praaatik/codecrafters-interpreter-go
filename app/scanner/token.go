@@ -16,7 +16,9 @@ const (
 	STAR
 	EQUAL
 	EQUAL_EQUAL
+	LESS
 	LESS_EQUAL
+	GREATER
 	GREATER_EQUAL
 	BANG
 	BANG_EQUAL
@@ -49,10 +51,18 @@ func (t TokenType) String() string {
 		return "SLASH"
 	case EOF:
 		return "EOF"
+	case GREATER:
+		return "GREATER"
+	case GREATER_EQUAL:
+		return "GREATER_EQUAL"
 	case EQUAL:
 		return "EQUAL"
 	case EQUAL_EQUAL:
 		return "EQUAL_EQUAL"
+	case LESS:
+		return "LESS"
+	case LESS_EQUAL:
+		return "LESS_EQUAL"
 	case BANG_EQUAL:
 		return "BANG_EQUAL"
 	case BANG:
