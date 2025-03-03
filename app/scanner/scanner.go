@@ -186,7 +186,8 @@ func (s *Scanner) scanToken() {
 				LineNumber: s.line,
 			})
 		}
-
+	case '"':
+		s.scanString()
 	case '\n':
 		s.line++
 		return
@@ -201,6 +202,40 @@ func (s *Scanner) scanToken() {
 	default:
 		s.reportError(current)
 	}
+}
+
+func (s *Scanner) scanString() {
+	startIndex := s.current
+
+	//till not at the end AND not a double quote, continue
+	for !s.isAtEnd() && s.source[s.current] != '"' {
+		// continue even if on next line
+		if s.source[s.current] == '\n' {
+			s.line++
+		}
+		s.Advance()
+	}
+
+	// this is triggered only if the EOF is reached AND no double quotes were found
+	// if double quotes were found, they'd be reached and handled in the previous for loop
+	if s.isAtEnd() {
+		_, _ = fmt.Fprintf(os.Stderr, "[line %d] Error: Unterminated string.\n", s.line)
+		s.hasError = true
+		return
+	}
+
+	// consume the second double quote
+	s.Advance()
+
+	lexeme := s.source[s.start:s.current]         // include the double quotes
+	literal := s.source[startIndex : s.current-1] // exclude the double quotes
+
+	s.addToken(Token{
+		Type:       STRING,
+		Lexeme:     lexeme,
+		Literal:    literal,
+		LineNumber: s.line,
+	})
 }
 
 func (s *Scanner) reportError(c byte) {
@@ -244,7 +279,13 @@ func (s *Scanner) PrintOutput() {
 			lexeme = token.Lexeme
 		}
 
-		fmt.Println(token.Type.String() + " " + lexeme + " " + "null")
+		switch token.Literal.(type) {
+		case string:
+			fmt.Println(token.Type.String(), lexeme, token.Literal)
+		default:
+			fmt.Println(token.Type.String() + " " + lexeme + " " + "null")
+		}
+
 	}
 
 	if s.hasError {
