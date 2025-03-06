@@ -216,8 +216,17 @@ func (s *Scanner) scanIdentifiers() {
 		s.Advance()
 	}
 
+	var currentTokenType TokenType
+
+	token, exists := Keywords[s.source[s.start:s.current]]
+	if !exists {
+		currentTokenType = IDENTIFIER
+	} else {
+		currentTokenType = token
+	}
+
 	s.addToken(Token{
-		Type:       IDENTIFIER,
+		Type:       currentTokenType,
 		Lexeme:     s.source[s.start:s.current],
 		Literal:    nil,
 		LineNumber: s.line,
