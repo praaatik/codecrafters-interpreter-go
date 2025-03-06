@@ -203,10 +203,33 @@ func (s *Scanner) scanToken() {
 	default:
 		if unicode.IsNumber(rune(current)) {
 			s.scanNumber()
+		} else if s.isAlpha(rune(current)) {
+			s.scanIdentifiers()
 		} else {
 			s.reportError(current)
 		}
 	}
+}
+
+func (s *Scanner) scanIdentifiers() {
+	for s.isAlphanumeric(s.Peek()) {
+		s.Advance()
+	}
+
+	s.addToken(Token{
+		Type:       IDENTIFIER,
+		Lexeme:     s.source[s.start:s.current],
+		Literal:    nil,
+		LineNumber: s.line,
+	})
+}
+
+func (s *Scanner) isAlphanumeric(c byte) bool {
+	return s.isAlpha(rune(c)) || unicode.IsNumber(rune(c))
+}
+
+func (s *Scanner) isAlpha(current rune) bool {
+	return unicode.IsLetter(current) || current == '_'
 }
 
 func (s *Scanner) scanNumber() {

@@ -24,6 +24,7 @@ const (
 	BANG_EQUAL
 	STRING
 	NUMBER
+	IDENTIFIER
 	EOF
 )
 
@@ -73,6 +74,8 @@ func (t TokenType) String() string {
 		return "STRING"
 	case NUMBER:
 		return "NUMBER"
+	case IDENTIFIER:
+		return "IDENTIFIER"
 	default:
 		return ""
 	}
