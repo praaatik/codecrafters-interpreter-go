@@ -3,6 +3,7 @@ package scanner
 import (
 	"fmt"
 	"os"
+	"unicode"
 )
 
 type Scanner struct {
@@ -200,8 +201,64 @@ func (s *Scanner) scanToken() {
 
 	// TODO: handle the default
 	default:
-		s.reportError(current)
+		if unicode.IsNumber(rune(current)) {
+			s.scanNumber()
+		} else {
+			s.reportError(current)
+		}
 	}
+}
+
+func (s *Scanner) scanNumber() {
+	integerPart := string(s.PeekPrev())
+	decimalPart := ""
+
+	for unicode.IsNumber(rune(s.Peek())) {
+		integerPart = integerPart + string(s.Peek())
+		s.Advance()
+	}
+
+	if string(s.Peek()) == "." && unicode.IsNumber(rune(s.PeekNext())) {
+		s.Advance() // .
+
+		for unicode.IsNumber(rune(s.Peek())) {
+			decimalPart = decimalPart + string(s.Peek())
+			s.Advance()
+		}
+	}
+
+	literal := integerPart
+	lexeme := integerPart
+	if decimalPart != "" {
+		lexeme += "."
+		lexeme += decimalPart
+	}
+
+	isZero := true
+
+	for _, value := range decimalPart {
+		if value != '0' {
+			isZero = false
+		}
+	}
+
+	if isZero && decimalPart != "" {
+		decimalPart = "0"
+	}
+
+	if decimalPart != "" {
+		literal += "."
+		literal += decimalPart
+	} else {
+		literal += ".0"
+	}
+
+	s.addToken(Token{
+		Type:       NUMBER,
+		Lexeme:     lexeme,
+		Literal:    literal,
+		LineNumber: s.line,
+	})
 }
 
 func (s *Scanner) scanString() {
@@ -236,6 +293,27 @@ func (s *Scanner) scanString() {
 		Literal:    literal,
 		LineNumber: s.line,
 	})
+}
+
+func (s *Scanner) PeekPrev() byte {
+	if s.current == 0 {
+		return 0
+	}
+	return s.source[s.current-1]
+}
+
+func (s *Scanner) Peek() byte {
+	if s.isAtEnd() {
+		return 0
+	}
+	return s.source[s.current]
+}
+
+func (s *Scanner) PeekNext() byte {
+	if s.current+1 >= len(s.source) {
+		return 0
+	}
+	return s.source[s.current+1]
 }
 
 func (s *Scanner) reportError(c byte) {

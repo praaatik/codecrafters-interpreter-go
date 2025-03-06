@@ -23,6 +23,7 @@ const (
 	BANG
 	BANG_EQUAL
 	STRING
+	NUMBER
 	EOF
 )
 
@@ -70,7 +71,8 @@ func (t TokenType) String() string {
 		return "BANG"
 	case STRING:
 		return "STRING"
-
+	case NUMBER:
+		return "NUMBER"
 	default:
 		return ""
 	}
